@@ -8,7 +8,7 @@ import os
 import tempfile
 
 # 1. Configure Gemini API
-genai.configure(api_key="AIzaSyD-V0owEeBAzEaNhx2We9ZabgAF-Lwp3rc")  # Replace with your actual key
+genai.configure(api_key="")  # Replace with your actual key
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 # 2. Language options
