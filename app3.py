@@ -53,29 +53,21 @@ if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB")
     st.image(image, caption="Uploaded Image", use_column_width=True)
 
-    # 6. Create prompt
-    prompt = f"""
-You are a plant disease expert. Please respond only in {languages[selected_language]}.
+    # 6. Analyze image
+with st.spinner("🔍 Analyzing the image..."):
+    response = client.models.generate_content(
+        model="gemini-3.8-flash",
+        contents=[prompt, image]
+    )
+    result_text = response.text or ""
 
-Based on this leaf image:
-1. Identify if it has a disease.
-2. Name the disease if known.
-3. Recommend low-cost fertilizers to improve the plant's health.
-4. Recommend low-cost or natural pesticides for treatment or prevention.
-"""
+# 7. Display diagnosis
+st.subheader(f"🩺 Diagnosis & Treatment in {languages[selected_language]}")
 
-    with st.spinner("🔍 Analyzing the image..."):
-        response = client.models.generate_content(
-    model="gemini-3.8-flash",
-    contents=[prompt, image]
-)
-
-result_text = response.text
-
-    # 7. Display diagnosis
-    st.subheader(f"🩺 Diagnosis & Treatment in {languages[selected_language]}")
+if result_text:
     st.write(result_text)
-
+else:
+    st.warning("No diagnosis was generated. Please try again.")
     # 8. Voice Output
     st.subheader("🔊 Listen to the result")
     lang_code = {
