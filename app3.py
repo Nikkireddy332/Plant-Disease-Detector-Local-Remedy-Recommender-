@@ -3,12 +3,14 @@ import google.generativeai as genai
 from PIL import Image
 from gtts import gTTS
 import geocoder
-from fpdf import FPDF
 import os
 import tempfile
 
 # 1. Configure Gemini API
-genai.configure(api_key="")  # Replace with your actual key
+genai.configure(
+    api_key=st.secrets["GEMINI_API_KEY"]
+)
+
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 # 2. Language options
