@@ -70,6 +70,7 @@ with st.spinner("🔍 Analyzing the image..."):
         model="gemini-3.8-flash",
         contents=[prompt, image]
     )
+
     result_text = response.text or ""
 
 # 8. Display diagnosis
