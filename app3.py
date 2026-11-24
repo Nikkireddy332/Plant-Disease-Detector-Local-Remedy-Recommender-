@@ -47,39 +47,53 @@ selected_language = st.selectbox("🌍 Select Language", list(languages.keys()),
                                  index=list(languages.keys()).index(default_lang))
 
 # 5. Upload leaf image
-uploaded_file = st.file_uploader("📷 Upload a leaf image", type=["jpg", "jpeg", "png"])
+uploaded_file = st.file_uploader(
+    "📷 Upload a leaf image",
+    type=["jpg", "jpeg", "png"]
+)
 
 if uploaded_file is not None:
+
     image = Image.open(uploaded_file).convert("RGB")
-    st.image(image, caption="Uploaded Image", use_column_width=True)
-    # 6. Create prompt
-prompt = f"""
-You are a plant disease expert. Please respond only in {languages[selected_language]}.
 
-Based on this leaf image:
-1. Identify whether the plant has a disease.
-2. Name the disease if known.
-3. Recommend low-cost fertilizers.
-4. Recommend low-cost or natural pesticides.
-5. Provide precautions to prevent the disease.
-"""
-
-    # 7. Analyze image
-with st.spinner("🔍 Analyzing the image..."):
-    response = client.models.generate_content(
-        model="gemini-3.8-flash",
-        contents=[prompt, image]
+    st.image(
+        image,
+        caption="Uploaded Image",
+        use_container_width=True
     )
 
-    result_text = response.text or ""
+    # 6. Create prompt
+    prompt = f"""
+    You are a plant disease expert.
+    Please respond only in {languages[selected_language]}.
 
-# 8. Display diagnosis
-st.subheader(f"🩺 Diagnosis & Treatment in {languages[selected_language]}")
+    Based on this leaf image:
+    1. Identify whether the plant has a disease.
+    2. Name the disease if known.
+    3. Recommend low-cost fertilizers.
+    4. Recommend low-cost or natural pesticides.
+    5. Provide precautions to prevent the disease.
+    """
 
-if result_text:
-    st.write(result_text)
-else:
-    st.warning("No diagnosis was generated. Please try again.")
+    # 7. Analyze image
+    with st.spinner("🔍 Analyzing the image..."):
+
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=[prompt, image]
+        )
+
+        result_text = response.text or ""
+
+    # 8. Display diagnosis
+    st.subheader(
+        f"🩺 Diagnosis & Treatment in {languages[selected_language]}"
+    )
+
+    if result_text:
+        st.write(result_text)
+    else:
+        st.warning("No diagnosis was generated. Please try again.")
     # 9. Voice Output
     st.subheader("🔊 Listen to the result")
     lang_code = {
