@@ -1,5 +1,5 @@
 import streamlit as st
-import google.generativeai as genai
+from google import genai
 from PIL import Image
 from gtts import gTTS
 import geocoder
@@ -7,11 +7,9 @@ import os
 import tempfile
 
 # 1. Configure Gemini API
-genai.configure(
+client = genai.Client(
     api_key=st.secrets["GEMINI_API_KEY"]
 )
-
-model = genai.GenerativeModel("gemini-1.5-flash")
 
 # 2. Language options
 languages = {
@@ -67,8 +65,12 @@ Based on this leaf image:
 """
 
     with st.spinner("🔍 Analyzing the image..."):
-        response = model.generate_content([prompt, image])
-        result_text = response.text
+        response = client.models.generate_content(
+    model="gemini-3.8-flash",
+    contents=[prompt, image]
+)
+
+result_text = response.text
 
     # 7. Display diagnosis
     st.subheader(f"🩺 Diagnosis & Treatment in {languages[selected_language]}")
